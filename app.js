@@ -1,76 +1,48 @@
-//import required modules
+//module imports
 const express = require("express");
+const app = express();
 const morgan = require("morgan");
 const dotenv = require("dotenv");
-const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
 var cookieParser = require("cookie-parser");
 const expressValidator = require("express-validator");
-const swaggerJsdoc = require("swagger-jsdoc"),
-  swaggerUi = require("swagger-ui-express");
+const cors = require("cors");
+const { connect } = require("./config/db");
+const { routes } = require("./routes/index");
+const passport = require('passport');
+const {passportStrategy} = require('./config/passport.config');
 dotenv.config();
 
-//initializing the  express
-const app = express();
-app.use(express.json());
-app.use(
-  express.urlencoded({
-    extended: true,
-  })
-);
-app.set("port", process.env.PORT || 8080);
+//connect to database
+connect(process.env.MONGO_URI);
 
-//connecting the mongoDb
-mongoose
-  .connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => console.log("DB connected"));
-
-mongoose.connection.on("error", (err) => {
-  console.log(err);
-});
-
-//bring in routes
-const authRoutes=require("./routes/auth") ;
 
 //use middleware
+app.use(cors());
+app.use(passport.initialize());
 app.use(morgan("dev"));
+app.use(bodyParser.json());
 app.use(expressValidator());
 app.use(cookieParser());
 
-//Routes
-app.use('/',authRoutes);
+//passport config settings
+passportStrategy();
 
-//swagger-document
-const options = {
-  definition: {
-    openapi: "3.0.0",
-    info: {
-      title: "ECommerce Documentation",
-      version: "1.0.0",
-      description: "ECommerce Application api Documentation",
-      license: {
-        name: "",
-        url: "",
-      },
-      contact: {
-        name: ":- K.R.SAI CHARAN",
-        url: "www.saicharankr.tech",
-        email: "saicharankr@gmail.com",
-      },
-    },
-    servers: [
-      {
-        url: "http://localhost:8080/",
-      },
-    ],
-  },
-  apis: ["./routes/users.js"],
-};
+//bring in routes
+// register routes
+routes(app);
 
-const specs = swaggerJsdoc(options);
-app.use("/docs", swaggerUi.serve, swaggerUi.setup(specs));
+
+app.set("port", process.env.PORT || 8080);
+
+//handling the authorization for routes
+app.use(function (err, req, res, next) {
+  console.log(err);
+  if (err.name === "UnauthorizedError") {
+    res.status(401).json({ error: "Unauthorized !!" });
+  }
+});
+
 app.listen(app.get("port"), function () {
   console.log("App is running, server is listening on port ", app.get("port"));
 });

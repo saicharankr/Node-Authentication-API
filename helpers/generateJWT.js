@@ -1,15 +1,13 @@
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
-const options = {
-  expiresIn: "1h",
-};
 
 async function generateJwt(userId) {
   try {
-    const payload = { id: userId };
-    const token = await jwt.sign(payload, process.env.JWT_SECRET, options);
-    return { error: false, token: token };
+    const payload = { id: userId};
+    const expiresIn = '7d';
+    const token = await jwt.sign(payload, process.env.JWT_SECRET,{expiresIn:expiresIn});
+    return { error: false, token: token ,expire:expiresIn};
   } catch (error) {
     return { error: true };
   }

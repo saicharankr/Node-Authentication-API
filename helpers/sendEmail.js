@@ -1,8 +1,8 @@
 const nodemailer = require("nodemailer");
 require("dotenv").config();
-const {logger}=require('./logging')
 
-async function sendEmail (contentObj) {
+
+exports.emailSettings = async (contentObj) => {
   try {
     const smtpServer = process.env.SMTP_SERVER;
     const smtpPort = process.env.SMTP_PORT;
@@ -37,16 +37,28 @@ async function sendEmail (contentObj) {
       }
       console.log(info.message)
     });
-    
     return {error:false};
   } catch (e) {
     // logger.error(e);
     console.log(e)
     return {
       error: true,
-      message: "Cannot send email",
     };
   }
 };
 
-module.exports={sendEmail};
+exports.send =  async (email, subject, message, code) => {
+    var body_html = `<!DOCTYPE> 
+      <html>
+        <body>
+          <p> ${message} : </p> <b> ${code} </b>
+        </body>
+      </html>`;
+  
+    var emailInfo = {
+      toEmail: email,
+      subject: subject,
+      body_html: body_html,
+    };
+    return await this.emailSettings(emailInfo);
+}

@@ -32,8 +32,8 @@ exports.ResetPassword = async (req, res) => {
 //   userProperty: "auth",
 // });
 
-//Option 2 : - Jwt validation using passportjs package
-exports.requireSignin = passport.authenticate('jwt', { session: false })
+//Option 2 : - Jwt validation using passport.js package
+exports.requireSignin = passport.authenticate('jwt', { session: false });
 
 exports.signout = (req, res) => {
   res.clearCookie("token");
@@ -44,9 +44,7 @@ exports.signout = (req, res) => {
 };
 
 exports.isAuth = (req, res, next) => {
-  console.log("request Profile", req.profile);
-  console.log("Request auth", req.auth);
-  let user = req.profile && req.auth && req.profile.userId == req.auth.id;
+  let user = req.profile && req.user && req.profile.userId == req.user.userId;
   if (!user) {
     return res.status(403).json({
       error: true,

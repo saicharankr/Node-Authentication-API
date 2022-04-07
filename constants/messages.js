@@ -13,13 +13,17 @@
   FORGOT_PASSWORD_FAILED:"Failed to send the password reset link",
   JWT_FAILED:"Couldn't create access token. Please try again later",
   PASSWORD_RESET_TOKEN_INVALID:"Password reset token is invalid or has expired.",
-  PASSWORD_RESET_FAILED:"Password reset failed"
+  PASSWORD_RESET_FAILED:"Password reset failed",
+  USER_NOT_FOUND:"User not found.",
+  INTERNAL_SERVER_ERROR:"Internal server error."
 });
 exports.successMessages = Object.freeze({
   LOGIN_SUCCESSFUL: "User logged in successfully",
   ACTIVATED:"Account activated successfully",
   FORGOT_PASSWORD_SUCCESS:"Email with password reset link is sent",
-  PASSWORD_RESET_SUCCESS:"Password has been changed"
+  PASSWORD_RESET_SUCCESS:"Password has been changed",
+  LIST_OF_RECORDS: "List of records",
+  YOUR_REQUEST_SUCCESS : " Your request is successful."
 });
 
 

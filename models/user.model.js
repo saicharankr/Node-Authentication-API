@@ -3,6 +3,10 @@ const { v4: uuidV4 } = require("uuid");
 const crypto = require("crypto");
 
 const userSchema = new mongoose.Schema({
+  userId: {
+    type: String,
+    required: true,
+  },
   firstName: {
     type: String,
     trim: true,
@@ -62,29 +66,29 @@ const userSchema = new mongoose.Schema({
  * Virtual fields are additional fields for a given model.
  */
 
- userSchema
- .virtual("password")
- .set(async function (password) {
-   this._password = password;
+userSchema
+  .virtual("password")
+  .set(async function (password) {
+    this._password = password;
 
-   //generate a timestamp
-   this.salt =  uuidV4();
+    //generate a timestamp
+    this.salt = uuidV4();
 
-   //encrypting the password
-   this.hashed_password = await this.encryptPassword(password);
- })
- .get(function () {
-   return this._password;
- });
+    //encrypting the password
+    this.hashed_password = await this.encryptPassword(password);
+  })
+  .get(function () {
+    return this._password;
+  });
 
 userSchema
- .virtual("confirmPassword")
- .set(function (confirm_password) {
-   this._confirm_password = confirm_password;
- })
- .get(function () {
-   return this.confirm_password;
- });
+  .virtual("confirmPassword")
+  .set(function (confirm_password) {
+    this._confirm_password = confirm_password;
+  })
+  .get(function () {
+    return this.confirm_password;
+  });
 
 userSchema.methods = {
   authenticate: async function (plainText) {

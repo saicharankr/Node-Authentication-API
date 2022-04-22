@@ -61,18 +61,18 @@ exports.activeUser = async (req,res) => {
       responseHandler(res,true,StatusCodes.BAD_REQUEST,errorMessages.NULL_REQUEST);
     }
 
-    const user = await User.findOne({email:requestBody.email,emailToken:requestBody.code})
+    const user = await User.findOne({email:requestBody.email,emailToken:requestBody.code,emailTokenExpires:{$gt:Date.now()}})
     
     //checking if it is a valid code
     if(!user){
       return responseHandler(res,true,StatusCodes.BAD_REQUEST,errorMessages.INVALID_CODE);
     }
-    //checking the code expire
-    else if(!(user.emailTokenExpires.getMinutes() - Date.now().getMinutes() <= 15 )){
-      return responseHandler(res,true,StatusCodes.BAD_REQUEST,errorMessages.CODE_EXPIRED);
-    }
+    // //checking the code expire
+    // else if(!(user.emailTokenExpires - Date.now().getMinutes() <= 15 )){
+    //   return responseHandler(res,true,StatusCodes.BAD_REQUEST,errorMessages.CODE_EXPIRED);
+    // }
     //checking if user is already activated
-    else if(user){
+    else if(user.active){
       return responseHandler(res,true,StatusCodes.BAD_REQUEST,errorMessages.ALREADY_ACTIVATED);
     }
       user.emailToken = "";

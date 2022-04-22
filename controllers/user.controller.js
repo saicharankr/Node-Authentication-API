@@ -20,16 +20,4 @@ exports.updateUser = async (req, res) => {
 
 exports.deleteUser = async (req,res) => {
   await userService.deleteUserById(req,res);
-  // let user =req.profile
-  // user.remove((err) => {
-  //   if(err){
-  //     res.status(400).json({
-  //       error:err
-  //     })
-  //     res.status(200).json({
-  //       message:"Your account is deleted"
-  //     })
-  //   }
-  // })
-  
 }

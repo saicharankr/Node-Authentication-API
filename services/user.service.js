@@ -186,8 +186,8 @@ exports.updateUserById = async (req, res) => {
 
 exports.deleteUserById = async (req, res) => {
   try {
-    User.findByIdAndRemove({ userId: req.params.userId }).catch((err) =>
-      err
+    User.findOneAndRemove({ userId: req.params.userId },{_id:0,new: true}).catch((err) =>
+      err 
         ? responseHandler(
             res,
             true,
